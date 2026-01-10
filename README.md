@@ -1,3 +1,7 @@
+# 注意！
+此项目已于2026.1.10正式宣布停止更新。此项目将被归档。感谢你的支持。
+后续，此项目将更换为更稳定、更快的C#，敬请期待！
+
 # Python Module Installer
 
 ![Python Version](https://img.shields.io/badge/python-3.6%2B-blue)
@@ -39,7 +43,7 @@ pip install PyQt5
 
 3. 运行程序
 ```bash
-python main.py
+python PyModIus.py
 ```
 
 ## 使用说明
