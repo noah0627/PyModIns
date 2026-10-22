@@ -61,7 +61,7 @@ class Translator:
             "about_title": "Version Information",
             "version": "Version: Release 2.0.2",
             "build_date": "Build Date: 2025.6.7",
-            "copyright": "©2025 Noah1001. All rights reserved",
+            "copyright": "Created by Noah1001, 2025",
             "update_log_title": "Update Log",
             "update_content": """Version Release 2.0.2 Update Log:
 
@@ -145,7 +145,7 @@ New Features:
             "about_title": "版本信息",
             "version": "版本: Release 2.0.2",
             "build_date": "构建时间: 2025.6.7",
-            "copyright": "©2025 Noah1001. 保留所有权利",
+            "copyright": "Created by Noah1001, 2025",
             "update_log_title": "更新日志",
             "update_content": """版本 Release 2.0.2 更新日志:
 
@@ -229,7 +229,7 @@ New Features:
             "about_title": "バージョン情報",
             "version": "バージョン: Release 2.0.2",
             "build_date": "ビルド日: 2025.6.7",
-            "copyright": "©2025 Noah1001. 全著作権所有",
+            "copyright": "Created by Noah1001, 2025",
             "update_log_title": "更新ログ",
             "update_content": """バージョン Release 2.0.2 更新内容:
 
