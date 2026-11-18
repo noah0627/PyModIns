@@ -1,7 +1,6 @@
 import os
 import sys
 import threading
-import webbrowser
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLabel, QLineEdit, QPushButton,
                              QVBoxLayout, QWidget, QProgressBar, QMessageBox, QTextEdit,
                              QDialog, QHBoxLayout, QComboBox, QFileDialog)
@@ -11,8 +10,6 @@ from subprocess import Popen, PIPE
 import traceback
 import json
 import platform
-from datetime import datetime
-
 
 
 # ==================== 多语言支持 ====================
@@ -23,7 +20,7 @@ class Translator:
             "zh": self._chinese(),
             "ja": self._japanese()
         }
-        self.current_lang = "zh"  # 默认中文
+        self.current_lang = "zh"
 
     def set_language(self, lang):
         if lang in self.languages:
@@ -35,7 +32,7 @@ class Translator:
 
     def _english(self):
         return {
-            "app_title": "Python Module Installer - Release 2.0.2",
+            "app_title": "Python Module Installer - Release 2.0.3",
             "menu_file": "File",
             "menu_tools": "Tools",
             "menu_help": "Help",
@@ -45,8 +42,6 @@ class Translator:
             "settings": "Settings",
             "list_packages": "List Packages",
             "about": "About",
-            "documentation": "Documentation",
-            "check_updates": "Check Updates",
             "update_log": "Update Log",
             "install_module": "Install Module",
             "module_name_placeholder": "Enter module name (e.g. numpy)",
@@ -54,29 +49,27 @@ class Translator:
             "install_wheel": "Install Wheel File",
             "upgrade_module": "Upgrade Module",
             "uninstall_module": "Uninstall Module",
+            "update_pip": "Update pip",  # 新增
             "log_window_title": "Install Log",
             "save_log": "Save Log",
             "clear_log": "Clear Log",
             "close": "Close",
             "about_title": "Version Information",
-            "version": "Version: Release 2.0.2",
-            "build_date": "Build Date: 2025.6.7",
-            "copyright": "Created by Noah1001, 2025",
+            "version": "Version: Release 2.0.3",
+            "build_date": "Build Date: 2026.11.17",
+            "copyright": "Made by Noah1001",
             "update_log_title": "Update Log",
-            "update_content": """Version Release 2.0.2 Update Log:
+            "update_content": """Version Release 2.0.3 Update Log:
 
-1. Added real-time language switching
-2. Improved restart prompt for language changes
-3. Fixed several UI issues
-4. Enhanced stability
+1. Fixed a critical bug that caused the application to crash on changing the language
+2. Removed the update check feature
+3. Removed the "latest version" message from the update check
+4. Removed the theme selection feature
+5. Added a button to update pip
 
 New Features:
-- Instant language preview
-- Smoother restart process
-- Better error handling""",
+- Update pip button""",
             "settings_title": "Settings",
-            "theme": "Theme:",
-            "theme_options": ["System Default", "Light", "Dark"],
             "mirror": "Mirror Source:",
             "mirror_options": [
                 "Default (PyPI)",
@@ -104,11 +97,10 @@ New Features:
             "invalid_wheel": "Please select a valid .whl file!",
             "confirm_uninstall": "Confirm Uninstall",
             "uninstall_confirm": "Are you sure you want to uninstall {module}?",
-            "latest_version": "You are using the latest Release 2.0.2 version",
             "settings_saved": "Settings have been saved successfully",
             "save_error": "Failed to save settings: {error}",
             "fatal_error": "Fatal Error",
-            "crash_message": "The application encountered a fatal error:\n{error}\n\nVersion: Release 2.0.2\nSystem: {system}",
+            "crash_message": "The application encountered a fatal error:\n{error}\n\nVersion: Release 2.0.3\nSystem: {system}",
             "restart_required": "Restart required",
             "restart_message": "Language change requires restart. Restart now?",
             "yes": "Yes",
@@ -119,7 +111,7 @@ New Features:
 
     def _chinese(self):
         return {
-            "app_title": "Python模块安装器 - Release 2.0.2",
+            "app_title": "Python模块安装器 - Release 2.0.3",
             "menu_file": "文件",
             "menu_tools": "工具",
             "menu_help": "帮助",
@@ -129,8 +121,6 @@ New Features:
             "settings": "设置",
             "list_packages": "列出已安装包",
             "about": "关于",
-            "documentation": "文档",
-            "check_updates": "检查更新",
             "update_log": "更新日志",
             "install_module": "安装模块",
             "module_name_placeholder": "输入模块名 (例如 numpy)",
@@ -138,29 +128,27 @@ New Features:
             "install_wheel": "安装Wheel文件",
             "upgrade_module": "升级模块",
             "uninstall_module": "卸载模块",
+            "update_pip": "更新 pip",  # 新增
             "log_window_title": "安装日志",
             "save_log": "保存日志",
             "clear_log": "清空日志",
             "close": "关闭",
             "about_title": "版本信息",
-            "version": "版本: Release 2.0.2",
-            "build_date": "构建时间: 2025.6.7",
-            "copyright": "Created by Noah1001, 2025",
+            "version": "版本: Release 2.0.3",
+            "build_date": "构建时间: 2026.11.17",
+            "copyright": "Created by Noah1001",
             "update_log_title": "更新日志",
-            "update_content": """版本 Release 2.0.2 更新日志:
+            "update_content": """版本 Release 2.0.3 更新日志:
 
-1. 添加实时语言切换功能
-2. 改进语言更改的重启提示
-3. 修复多个UI问题
-4. 增强稳定性
+1. 修复了语言更改时导致应用程序崩溃的严重错误
+2. 移除了更新检查功能
+3. 移除了更新检查中的“已是最新版本”提示
+4. 移除了主题选择功能
+5. 增加了更新 pip 的按钮
 
 新特性:
-- 即时语言预览
-- 更流畅的重启过程
-- 更好的错误处理""",
+- 更新 pip 按钮""",
             "settings_title": "设置",
-            "theme": "主题:",
-            "theme_options": ["系统默认", "浅色", "深色"],
             "mirror": "镜像源:",
             "mirror_options": [
                 "默认(PyPI)",
@@ -188,11 +176,10 @@ New Features:
             "invalid_wheel": "请选择有效的.whl文件!",
             "confirm_uninstall": "确认卸载",
             "uninstall_confirm": "确定要卸载 {module} 吗?",
-            "latest_version": "您正在使用最新的 Release 2.0.2 版本",
             "settings_saved": "设置已成功保存",
             "save_error": "保存设置失败: {error}",
             "fatal_error": "致命错误",
-            "crash_message": "应用程序遇到致命错误:\n{error}\n\n版本: Release 2.0.2\n系统: {system}",
+            "crash_message": "应用程序遇到致命错误:\n{error}\n\n版本: Release 2.0.3\n系统: {system}",
             "restart_required": "需要重启",
             "restart_message": "语言更改需要重启应用。立即重启吗?",
             "yes": "是",
@@ -203,7 +190,7 @@ New Features:
 
     def _japanese(self):
         return {
-            "app_title": "Pythonモジュールインストーラー - Release 2.0.2",
+            "app_title": "Pythonモジュールインストーラー - Release 2.0.3",
             "menu_file": "ファイル",
             "menu_tools": "ツール",
             "menu_help": "ヘルプ",
@@ -213,8 +200,6 @@ New Features:
             "settings": "設定",
             "list_packages": "インストール済みパッケージ一覧",
             "about": "バージョン情報",
-            "documentation": "ドキュメント",
-            "check_updates": "更新を確認",
             "update_log": "更新ログ",
             "install_module": "モジュールをインストール",
             "module_name_placeholder": "モジュール名を入力 (例: numpy)",
@@ -222,29 +207,27 @@ New Features:
             "install_wheel": "Wheelファイルをインストール",
             "upgrade_module": "モジュールをアップグレード",
             "uninstall_module": "モジュールをアンインストール",
+            "update_pip": "pipを更新",  # 新增
             "log_window_title": "インストールログ",
             "save_log": "ログを保存",
             "clear_log": "ログをクリア",
             "close": "閉じる",
             "about_title": "バージョン情報",
-            "version": "バージョン: Release 2.0.2",
-            "build_date": "ビルド日: 2025.6.7",
-            "copyright": "Created by Noah1001, 2025",
+            "version": "バージョン: Release 2.0.3",
+            "build_date": "ビルド日: 2026.11.17",
+            "copyright": "Created by Noah1001",
             "update_log_title": "更新ログ",
-            "update_content": """バージョン Release 2.0.2 更新内容:
+            "update_content": """バージョン Release 2.0.3 更新内容:
 
-1. リアルタイム言語切替機能を追加
-2. 言語変更時の再起動プロンプトを改善
-3. 複数のUI問題を修正
-4. 安定性を向上
+1. 言語変更時にアプリケーションがクラッシュする重大なバグを修正
+2. 更新チェック機能を削除
+3. 更新チェックの「最新バージョンです」メッセージを削除
+4. テーマ選択機能を削除
+5. pipを更新するボタンを追加
 
 新機能:
-- インスタント言語プレビュー
-- スムーズな再起動プロセス
-- より良いエラー処理""",
+- pipを更新するボタン""",
             "settings_title": "設定",
-            "theme": "テーマ:",
-            "theme_options": ["システムデフォルト", "ライト", "ダーク"],
             "mirror": "ミラーソース:",
             "mirror_options": [
                 "デフォルト (PyPI)",
@@ -272,11 +255,10 @@ New Features:
             "invalid_wheel": "有効な.whlファイルを選択してください!",
             "confirm_uninstall": "アンインストールの確認",
             "uninstall_confirm": "{module} をアンインストールしますか?",
-            "latest_version": "最新の Release 2.0.2 バージョンを使用しています",
             "settings_saved": "設定が正常に保存されました",
             "save_error": "設定の保存に失敗しました: {error}",
             "fatal_error": "致命的なエラー",
-            "crash_message": "アプリケーションで致命的なエラーが発生しました:\n{error}\n\nバージョン: Release 2.0.2\nシステム: {system}",
+            "crash_message": "アプリケーションで致命的なエラーが発生しました:\n{error}\n\nバージョン: Release 2.0.3\nシステム: {system}",
             "restart_required": "再起動が必要です",
             "restart_message": "言語変更には再起動が必要です。今すぐ再起動しますか?",
             "yes": "はい",
@@ -284,7 +266,6 @@ New Features:
             "language": "言語:",
             "language_options": ["中文", "English", "日本語"]
         }
-
 
 translator = Translator()
 
@@ -349,7 +330,7 @@ class UpdateLogWindow(QDialog):
 
         layout = QVBoxLayout()
 
-        version_label = QLabel("Release 2.0.2")
+        version_label = QLabel("Release 2.0.3")
         version_label.setStyleSheet("font-size: 18px; font-weight: bold;")
         layout.addWidget(version_label)
 
@@ -402,20 +383,15 @@ class AboutWindow(QDialog):
         system_info.setAlignment(Qt.AlignCenter)
         layout.addWidget(system_info)
 
-        # 添加链接
         link_layout = QHBoxLayout()
 
         github_btn = QPushButton("GitHub")
-        github_btn.clicked.connect(lambda: QDesktopServices.openUrl(QUrl("https://github.com")))
-
-        docs_btn = QPushButton(translator.text("documentation"))
-        docs_btn.clicked.connect(lambda: QDesktopServices.openUrl(QUrl("https://docs.python.org")))
+        github_btn.clicked.connect(lambda: QDesktopServices.openUrl(QUrl("https://github.com/noah0627/PyModIns")))
 
         update_log_btn = QPushButton(translator.text("update_log"))
         update_log_btn.clicked.connect(self.show_update_log)
 
         link_layout.addWidget(github_btn)
-        link_layout.addWidget(docs_btn)
         link_layout.addWidget(update_log_btn)
         layout.addLayout(link_layout)
 
@@ -446,19 +422,11 @@ class SettingsWindow(QDialog):
 
         layout = QVBoxLayout()
 
-        # 主题设置
-        theme_label = QLabel(translator.text("theme"))
-        self.theme_combo = QComboBox()
-        self.theme_combo.addItems(translator.text("theme_options"))
-        layout.addWidget(theme_label)
-        layout.addWidget(self.theme_combo)
-
         # 语言设置
-        lang_label = QLabel(translator.text("language"))
+        self.lang_label = QLabel(translator.text("language"))
         self.lang_combo = QComboBox()
         self.lang_combo.addItems(translator.text("language_options"))
 
-        # 设置当前语言选项
         current_lang = translator.current_lang
         if current_lang == "zh":
             self.lang_combo.setCurrentIndex(0)
@@ -468,27 +436,27 @@ class SettingsWindow(QDialog):
             self.lang_combo.setCurrentIndex(2)
 
         self.lang_combo.currentIndexChanged.connect(self.change_language)
-        layout.addWidget(lang_label)
+        layout.addWidget(self.lang_label)
         layout.addWidget(self.lang_combo)
 
         # 镜像源设置
-        mirror_label = QLabel(translator.text("mirror"))
+        self.mirror_label = QLabel(translator.text("mirror"))
         self.mirror_combo = QComboBox()
         self.mirror_combo.addItems(translator.text("mirror_options"))
-        layout.addWidget(mirror_label)
+        layout.addWidget(self.mirror_label)
         layout.addWidget(self.mirror_combo)
 
         # 代理设置
-        proxy_label = QLabel(translator.text("proxy"))
+        self.proxy_label = QLabel(translator.text("proxy"))
         self.proxy_edit = QLineEdit()
         self.proxy_edit.setPlaceholderText(translator.text("proxy_placeholder"))
-        layout.addWidget(proxy_label)
+        layout.addWidget(self.proxy_label)
         layout.addWidget(self.proxy_edit)
 
         # 保存按钮
-        save_btn = QPushButton(translator.text("save_settings"))
-        save_btn.clicked.connect(self.save_settings)
-        layout.addWidget(save_btn)
+        self.save_btn = QPushButton(translator.text("save_settings"))
+        self.save_btn.clicked.connect(self.save_settings)
+        layout.addWidget(self.save_btn)
 
         self.setLayout(layout)
 
@@ -500,10 +468,6 @@ class SettingsWindow(QDialog):
             if os.path.exists("settings.json"):
                 with open("settings.json", "r", encoding='utf-8') as f:
                     settings = json.load(f)
-                    if "theme" in settings:
-                        index = self.theme_combo.findText(settings["theme"])
-                        if index >= 0:
-                            self.theme_combo.setCurrentIndex(index)
                     if "mirror" in settings:
                         index = self.mirror_combo.findText(settings["mirror"])
                         if index >= 0:
@@ -511,29 +475,25 @@ class SettingsWindow(QDialog):
                     if "proxy" in settings:
                         self.proxy_edit.setText(settings["proxy"])
                     if "language" in settings:
+                        # 关键：屏蔽信号，防止读取设置时触发 change_language
+                        self.lang_combo.blockSignals(True)
                         index = self.lang_combo.findText(settings["language"])
                         if index >= 0:
                             self.lang_combo.setCurrentIndex(index)
+                        self.lang_combo.blockSignals(False)
         except Exception as e:
             print(f"加载设置失败: {str(e)}")
 
     def change_language(self, index):
         """更改语言并提示重启"""
+        if index < 0:
+            return
+
         lang_map = {0: "zh", 1: "en", 2: "ja"}
         new_lang = lang_map[index]
 
         if new_lang != translator.current_lang:
-            # 更新翻译器语言
-            translator.set_language(new_lang)
-
-            # 更新当前窗口文本
-            self.retranslate_ui()
-
-            # 更新父窗口文本
-            if self.parent_window:
-                self.parent_window.retranslate_ui()
-
-            # 提示用户重启
+            # 先弹窗，如果确定要改，再改语言
             reply = QMessageBox.question(
                 self,
                 translator.text("restart_required"),
@@ -543,27 +503,29 @@ class SettingsWindow(QDialog):
             )
 
             if reply == QMessageBox.Yes:
-                # 保存设置
+                translator.set_language(new_lang)
                 self.save_settings()
-                # 重启应用
-                QApplication.exit(100)  # 使用特殊退出码表示需要重启
+                QApplication.exit(100)  # 触发重启
+            else:
+                # 用户点否，UI回滚到当前语言
+                self.lang_combo.blockSignals(True)
+                old_lang_map = {"zh": 0, "en": 1, "ja": 2}
+                self.lang_combo.setCurrentIndex(old_lang_map[translator.current_lang])
+                self.lang_combo.blockSignals(False)
 
     def retranslate_ui(self):
-        """重新翻译UI文本"""
+        """重新翻译UI文本 (仅在需要时调用，目前由重启逻辑代替)"""
         self.setWindowTitle(translator.text("settings_title"))
-        self.layout().itemAt(0).widget().setText(translator.text("theme"))
-        self.layout().itemAt(2).widget().setText(translator.text("language"))
-        self.layout().itemAt(4).widget().setText(translator.text("mirror"))
-        self.layout().itemAt(6).widget().setText(translator.text("proxy"))
+        self.lang_label.setText(translator.text("language"))
+        self.mirror_label.setText(translator.text("mirror"))
+        self.proxy_label.setText(translator.text("proxy"))
         self.proxy_edit.setPlaceholderText(translator.text("proxy_placeholder"))
-        self.layout().itemAt(8).widget().setText(translator.text("save_settings"))
+        self.save_btn.setText(translator.text("save_settings"))
 
-        # 更新下拉框选项
-        self.theme_combo.clear()
-        self.theme_combo.addItems(translator.text("theme_options"))
-
+        self.lang_combo.blockSignals(True)
         self.lang_combo.clear()
         self.lang_combo.addItems(translator.text("language_options"))
+        
         current_lang = translator.current_lang
         if current_lang == "zh":
             self.lang_combo.setCurrentIndex(0)
@@ -571,7 +533,8 @@ class SettingsWindow(QDialog):
             self.lang_combo.setCurrentIndex(1)
         elif current_lang == "ja":
             self.lang_combo.setCurrentIndex(2)
-
+            
+        self.lang_combo.blockSignals(False) 
         self.mirror_combo.clear()
         self.mirror_combo.addItems(translator.text("mirror_options"))
 
@@ -579,11 +542,10 @@ class SettingsWindow(QDialog):
         """保存设置"""
         try:
             settings = {
-                "theme": self.theme_combo.currentText(),
                 "language": self.lang_combo.currentText(),
                 "mirror": self.mirror_combo.currentText(),
                 "proxy": self.proxy_edit.text(),
-                "version": "Release 2.0.2"
+                "version": "Release 2.0.3"
             }
             with open("settings.json", "w", encoding='utf-8') as f:
                 json.dump(settings, f, ensure_ascii=False, indent=4)
@@ -707,9 +669,9 @@ class ModuleInstaller(QMainWindow):
         self.signal_emitter.progress_signal.connect(self.update_progress)
         self.signal_emitter.install_complete.connect(self.handle_install_complete)
         self.signal_emitter.requirement_loaded.connect(self.handle_requirement_loaded)
-        self.initUI()
         self.load_settings()
-
+        self.initUI() 
+        
     def initUI(self):
         """初始化用户界面"""
         self.setWindowTitle(translator.text("app_title"))
@@ -727,31 +689,35 @@ class ModuleInstaller(QMainWindow):
         self.entry.setPlaceholderText(translator.text("module_name_placeholder"))
         main_layout.addWidget(self.entry)
 
-        install_btn = QPushButton(translator.text("install_module"))
-        install_btn.clicked.connect(self.start_install)
-        main_layout.addWidget(install_btn)
+        self.install_btn = QPushButton(translator.text("install_module"))
+        self.install_btn.clicked.connect(self.start_install)
+        main_layout.addWidget(self.install_btn)
 
         # 高级选项
         advanced_group = QWidget()
         advanced_layout = QVBoxLayout(advanced_group)
 
-        requirements_btn = QPushButton(translator.text("install_from_req"))
-        requirements_btn.clicked.connect(self.show_requirements_window)
-        advanced_layout.addWidget(requirements_btn)
+        self.requirements_btn = QPushButton(translator.text("install_from_req"))
+        self.requirements_btn.clicked.connect(self.show_requirements_window)
+        advanced_layout.addWidget(self.requirements_btn)
 
-        wheel_btn = QPushButton(translator.text("install_wheel"))
-        wheel_btn.clicked.connect(self.show_wheel_install_window)
-        advanced_layout.addWidget(wheel_btn)
+        self.wheel_btn = QPushButton(translator.text("install_wheel"))
+        self.wheel_btn.clicked.connect(self.show_wheel_install_window)
+        advanced_layout.addWidget(self.wheel_btn)
 
-        upgrade_btn = QPushButton(translator.text("upgrade_module"))
-        upgrade_btn.clicked.connect(self.upgrade_module)
-        advanced_layout.addWidget(upgrade_btn)
+        self.upgrade_btn = QPushButton(translator.text("upgrade_module"))
+        self.upgrade_btn.clicked.connect(self.upgrade_module)
+        advanced_layout.addWidget(self.upgrade_btn)
 
-        uninstall_btn = QPushButton(translator.text("uninstall_module"))
-        uninstall_btn.clicked.connect(self.uninstall_module)
-        advanced_layout.addWidget(uninstall_btn)
+        self.uninstall_btn = QPushButton(translator.text("uninstall_module"))
+        self.uninstall_btn.clicked.connect(self.uninstall_module)
+        advanced_layout.addWidget(self.uninstall_btn)
 
-        # 添加到主布局
+        # 新增：更新 pip 按钮
+        self.update_pip_btn = QPushButton(translator.text("update_pip"))
+        self.update_pip_btn.clicked.connect(self.update_pip)
+        advanced_layout.addWidget(self.update_pip_btn)
+
         layout.addWidget(main_group)
         layout.addWidget(advanced_group)
 
@@ -762,72 +728,54 @@ class ModuleInstaller(QMainWindow):
         menubar = self.menuBar()
 
         # 文件菜单
-        file_menu = menubar.addMenu(translator.text("menu_file"))
-        log_action = file_menu.addAction(translator.text("view_log"))
-        log_action.triggered.connect(self.show_log)
-        export_action = file_menu.addAction(translator.text("export_packages"))
-        export_action.triggered.connect(self.export_packages)
-        exit_action = file_menu.addAction(translator.text("exit"))
-        exit_action.triggered.connect(self.close)
+        self.file_menu = menubar.addMenu(translator.text("menu_file"))
+        self.log_action = self.file_menu.addAction(translator.text("view_log"))
+        self.log_action.triggered.connect(self.show_log)
+        self.export_action = self.file_menu.addAction(translator.text("export_packages"))
+        self.export_action.triggered.connect(self.export_packages)
+        self.exit_action = self.file_menu.addAction(translator.text("exit"))
+        self.exit_action.triggered.connect(self.close)
 
         # 工具菜单
-        tools_menu = menubar.addMenu(translator.text("menu_tools"))
-        settings_action = tools_menu.addAction(translator.text("settings"))
-        settings_action.triggered.connect(self.show_settings)
-        list_action = tools_menu.addAction(translator.text("list_packages"))
-        list_action.triggered.connect(self.list_installed_packages)
+        self.tools_menu = menubar.addMenu(translator.text("menu_tools"))
+        self.settings_action = self.tools_menu.addAction(translator.text("settings"))
+        self.settings_action.triggered.connect(self.show_settings)
+        self.list_action = self.tools_menu.addAction(translator.text("list_packages"))
+        self.list_action.triggered.connect(self.list_installed_packages)
 
         # 帮助菜单
-        help_menu = menubar.addMenu(translator.text("menu_help"))
-        about_action = help_menu.addAction(translator.text("about"))
-        about_action.triggered.connect(self.show_about)
-        docs_action = help_menu.addAction(translator.text("documentation"))
-        docs_action.triggered.connect(self.open_documentation)
-        check_update_action = help_menu.addAction(translator.text("check_updates"))
-        check_update_action.triggered.connect(self.check_for_updates)
-        update_log_action = help_menu.addAction(translator.text("update_log"))
-        update_log_action.triggered.connect(self.show_update_log)
+        self.help_menu = menubar.addMenu(translator.text("menu_help"))
+        self.about_action = self.help_menu.addAction(translator.text("about"))
+        self.about_action.triggered.connect(self.show_about)
+        self.update_log_action = self.help_menu.addAction(translator.text("update_log"))
+        self.update_log_action.triggered.connect(self.show_update_log)
 
     def retranslate_ui(self):
-        """重新翻译所有UI文本"""
+        """重新翻译所有UI文本 (实名制调用)"""
         self.setWindowTitle(translator.text("app_title"))
 
-        # 更新菜单栏
-        self.menuBar().actions()[0].setText(translator.text("menu_file"))
-        self.menuBar().actions()[1].setText(translator.text("menu_tools"))
-        self.menuBar().actions()[2].setText(translator.text("menu_help"))
+        # 菜单栏
+        self.file_menu.setTitle(translator.text("menu_file"))
+        self.tools_menu.setTitle(translator.text("menu_tools"))
+        self.help_menu.setTitle(translator.text("menu_help"))
 
-        # 更新文件菜单
-        file_menu = self.menuBar().actions()[0].menu()
-        file_menu.actions()[0].setText(translator.text("view_log"))
-        file_menu.actions()[1].setText(translator.text("export_packages"))
-        file_menu.actions()[2].setText(translator.text("exit"))
+        # 菜单项
+        self.log_action.setText(translator.text("view_log"))
+        self.export_action.setText(translator.text("export_packages"))
+        self.exit_action.setText(translator.text("exit"))
+        self.settings_action.setText(translator.text("settings"))
+        self.list_action.setText(translator.text("list_packages"))
+        self.about_action.setText(translator.text("about"))
+        self.update_log_action.setText(translator.text("update_log"))
 
-        # 更新工具菜单
-        tools_menu = self.menuBar().actions()[1].menu()
-        tools_menu.actions()[0].setText(translator.text("settings"))
-        tools_menu.actions()[1].setText(translator.text("list_packages"))
-
-        # 更新帮助菜单
-        help_menu = self.menuBar().actions()[2].menu()
-        help_menu.actions()[0].setText(translator.text("about"))
-        help_menu.actions()[1].setText(translator.text("documentation"))
-        help_menu.actions()[2].setText(translator.text("check_updates"))
-        help_menu.actions()[3].setText(translator.text("update_log"))
-
-        # 更新主界面按钮
-        central_widget = self.centralWidget()
-        main_group = central_widget.layout().itemAt(0).widget()
-        main_group.layout().itemAt(1).widget().setText(translator.text("install_module"))
-
-        advanced_group = central_widget.layout().itemAt(1).widget()
-        advanced_group.layout().itemAt(0).widget().setText(translator.text("install_from_req"))
-        advanced_group.layout().itemAt(1).widget().setText(translator.text("install_wheel"))
-        advanced_group.layout().itemAt(2).widget().setText(translator.text("upgrade_module"))
-        advanced_group.layout().itemAt(3).widget().setText(translator.text("uninstall_module"))
-
-        # 更新输入框提示
-        main_group.layout().itemAt(0).widget().setPlaceholderText(translator.text("module_name_placeholder"))
+        # 按钮和输入框
+        self.install_btn.setText(translator.text("install_module"))
+        self.entry.setPlaceholderText(translator.text("module_name_placeholder"))
+        self.requirements_btn.setText(translator.text("install_from_req"))
+        self.wheel_btn.setText(translator.text("install_wheel"))
+        self.upgrade_btn.setText(translator.text("upgrade_module"))
+        self.uninstall_btn.setText(translator.text("uninstall_module"))
+        self.update_pip_btn.setText(translator.text("update_pip")) # 新增
 
     def load_settings(self):
         """加载设置"""
@@ -838,7 +786,6 @@ class ModuleInstaller(QMainWindow):
                     if "language" in settings:
                         lang_map = {"中文": "zh", "English": "en", "日本語": "ja"}
                         translator.set_language(lang_map.get(settings["language"], "zh"))
-                        self.retranslate_ui()
                     return settings
             return {}
         except Exception as e:
@@ -872,26 +819,20 @@ class ModuleInstaller(QMainWindow):
 
             self.signal_emitter.progress_signal.emit(10)
 
+            # 核心优化：使用 sys.executable -m pip 保证环境正确
             if uninstall:
-                command = ['pip', 'uninstall', '-y', module]
+                command = [sys.executable, '-m', 'pip', 'uninstall', '-y', module]
             elif upgrade:
-                command = ['pip', 'install', '--upgrade', module]
+                command = [sys.executable, '-m', 'pip', 'install', '--upgrade', module]
             else:
-                command = ['pip', 'install', module]
+                command = [sys.executable, '-m', 'pip', 'install', module]
 
             if mirror_url:
                 command.extend(['-i', mirror_url, '--trusted-host', mirror_url.split('/')[2]])
 
-            with Popen(command,
-                       stdout=PIPE,
-                       stderr=PIPE,
-                       text=True,
-                       bufsize=1,
-                       universal_newlines=True) as process:
-
+            with Popen(command, stdout=PIPE, stderr=PIPE, text=True, bufsize=1, universal_newlines=True) as process:
                 for line in process.stdout:
                     self.signal_emitter.log_signal.emit(line)
-
                 for line in process.stderr:
                     self.signal_emitter.log_signal.emit(f"{translator.text('error')}: {line}")
 
@@ -899,15 +840,11 @@ class ModuleInstaller(QMainWindow):
                 self.signal_emitter.progress_signal.emit(100)
 
                 if process.returncode == 0:
-                    action = translator.text("uninstall_module") if uninstall else translator.text(
-                        "upgrade_module") if upgrade else translator.text("install_module")
-                    self.signal_emitter.install_complete.emit(True,
-                                                              f"{action.replace('模块', '')} {module} {translator.text('success').lower()}")
+                    action = translator.text("uninstall_module") if uninstall else translator.text("upgrade_module") if upgrade else translator.text("install_module")
+                    self.signal_emitter.install_complete.emit(True, f"{action.replace('模块', '')} {module} {translator.text('success').lower()}")
                 else:
-                    action = translator.text("uninstall_module") if uninstall else translator.text(
-                        "upgrade_module") if upgrade else translator.text("install_module")
-                    self.signal_emitter.install_complete.emit(False,
-                                                              f"{action.replace('模块', '')} {module} {translator.text('error').lower()}")
+                    action = translator.text("uninstall_module") if uninstall else translator.text("upgrade_module") if upgrade else translator.text("install_module")
+                    self.signal_emitter.install_complete.emit(False, f"{action.replace('模块', '')} {module} {translator.text('error').lower()}")
 
         except Exception as e:
             error_msg = f"{translator.text('fatal_error')}: {str(e)}\n{traceback.format_exc()}"
@@ -923,18 +860,11 @@ class ModuleInstaller(QMainWindow):
 
             self.signal_emitter.progress_signal.emit(10)
 
-            command = ['pip', 'install', wheel_path]
+            command = [sys.executable, '-m', 'pip', 'install', wheel_path]
 
-            with Popen(command,
-                       stdout=PIPE,
-                       stderr=PIPE,
-                       text=True,
-                       bufsize=1,
-                       universal_newlines=True) as process:
-
+            with Popen(command, stdout=PIPE, stderr=PIPE, text=True, bufsize=1, universal_newlines=True) as process:
                 for line in process.stdout:
                     self.signal_emitter.log_signal.emit(line)
-
                 for line in process.stderr:
                     self.signal_emitter.log_signal.emit(f"{translator.text('error')}: {line}")
 
@@ -943,11 +873,9 @@ class ModuleInstaller(QMainWindow):
 
                 if process.returncode == 0:
                     wheel_name = os.path.basename(wheel_path)
-                    self.signal_emitter.install_complete.emit(True,
-                                                              f"{translator.text('install_wheel')} {wheel_name} {translator.text('success').lower()}")
+                    self.signal_emitter.install_complete.emit(True, f"{translator.text('install_wheel')} {wheel_name} {translator.text('success').lower()}")
                 else:
-                    self.signal_emitter.install_complete.emit(False,
-                                                              f"{translator.text('install_wheel')} {translator.text('error').lower()}")
+                    self.signal_emitter.install_complete.emit(False, f"{translator.text('install_wheel')} {translator.text('error').lower()}")
 
         except Exception as e:
             error_msg = f"{translator.text('fatal_error')} {translator.text('install_wheel').lower()}: {str(e)}\n{traceback.format_exc()}"
@@ -956,7 +884,6 @@ class ModuleInstaller(QMainWindow):
 
     def install_multiple_modules(self, modules):
         """安装多个模块"""
-
         def worker():
             total = len(modules)
             for i, module in enumerate(modules, 1):
@@ -964,8 +891,7 @@ class ModuleInstaller(QMainWindow):
                 self.safe_install(module_name=module)
                 self.signal_emitter.progress_signal.emit(int((i / total) * 100))
 
-            self.signal_emitter.install_complete.emit(True,
-                                                      f"{translator.text('install_module')} {total} {translator.text('success').lower()}")
+            self.signal_emitter.install_complete.emit(True, f"{translator.text('install_module')} {total} {translator.text('success').lower()}")
 
         threading.Thread(target=worker, daemon=True).start()
 
@@ -994,16 +920,15 @@ class ModuleInstaller(QMainWindow):
 
         if reply == QMessageBox.Yes:
             threading.Thread(target=lambda: self.safe_install(module_name=module, uninstall=True), daemon=True).start()
+            
+    def update_pip(self):
+        """更新 pip 到最新版本"""
+        threading.Thread(target=lambda: self.safe_install(module_name="pip", upgrade=True), daemon=True).start()
 
     def list_installed_packages(self):
         """列出已安装包"""
         try:
-            with Popen(['pip', 'list', '--format=json'],
-                       stdout=PIPE,
-                       stderr=PIPE,
-                       text=True,
-                       universal_newlines=True) as process:
-
+            with Popen([sys.executable, '-m', 'pip', 'list', '--format=json'], stdout=PIPE, stderr=PIPE, text=True, universal_newlines=True) as process:
                 output, error = process.communicate()
 
                 if process.returncode == 0:
@@ -1011,39 +936,28 @@ class ModuleInstaller(QMainWindow):
                     package_list = "\n".join([f"{p['name']}=={p['version']}" for p in packages])
                     self.show_log_window(f"{translator.text('list_packages')}:\n{package_list}")
                 else:
-                    self.signal_emitter.log_signal.emit(
-                        f"{translator.text('error')} {translator.text('list_packages').lower()}: {error}")
+                    self.signal_emitter.log_signal.emit(f"{translator.text('error')} {translator.text('list_packages').lower()}: {error}")
 
         except Exception as e:
-            self.signal_emitter.log_signal.emit(
-                f"{translator.text('error')} {translator.text('list_packages').lower()}: {str(e)}")
+            self.signal_emitter.log_signal.emit(f"{translator.text('error')} {translator.text('list_packages').lower()}: {str(e)}")
 
     def export_packages(self):
         """导出包列表"""
-        file_path, _ = QFileDialog.getSaveFileName(self, translator.text("export_packages"), "requirements.txt",
-                                                   "Text Files (*.txt)")
+        file_path, _ = QFileDialog.getSaveFileName(self, translator.text("export_packages"), "requirements.txt", "Text Files (*.txt)")
         if file_path:
             try:
-                with Popen(['pip', 'freeze'],
-                           stdout=PIPE,
-                           stderr=PIPE,
-                           text=True,
-                           universal_newlines=True) as process:
-
+                with Popen([sys.executable, '-m', 'pip', 'freeze'], stdout=PIPE, stderr=PIPE, text=True, universal_newlines=True) as process:
                     output, error = process.communicate()
 
                     if process.returncode == 0:
                         with open(file_path, 'w', encoding='utf-8') as f:
                             f.write(output)
-                        QMessageBox.information(self, translator.text("success"),
-                                                f"{translator.text('export_packages')} {file_path} {translator.text('success').lower()}")
+                        QMessageBox.information(self, translator.text("success"), f"{translator.text('export_packages')} {file_path} {translator.text('success').lower()}")
                     else:
-                        QMessageBox.critical(self, translator.text("error"),
-                                             f"{translator.text('export_packages')} {translator.text('error').lower()}: {error}")
+                        QMessageBox.critical(self, translator.text("error"), f"{translator.text('export_packages')} {translator.text('error').lower()}: {error}")
 
             except Exception as e:
-                QMessageBox.critical(self, translator.text("error"),
-                                     f"{translator.text('export_packages')} {translator.text('error').lower()}: {str(e)}")
+                QMessageBox.critical(self, translator.text("error"), f"{translator.text('export_packages')} {translator.text('error').lower()}: {str(e)}")
 
     def handle_log(self, message):
         """处理日志"""
@@ -1104,15 +1018,6 @@ class ModuleInstaller(QMainWindow):
         """显示Wheel安装窗口"""
         wheel_window = WheelInstallWindow(self)
         wheel_window.exec_()
-
-    def open_documentation(self):
-        """打开文档"""
-        QDesktopServices.openUrl(QUrl("https://pip.pypa.io/en/stable/"))
-
-    def check_for_updates(self):
-        """检查更新"""
-        QMessageBox.information(self, translator.text("check_updates"),
-                                translator.text("latest_version"))
 
     def closeEvent(self, event):
         """关闭事件"""
